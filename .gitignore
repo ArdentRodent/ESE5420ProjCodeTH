@@ -1,0 +1,14 @@
+# Ignore everything at the top level...
+/*
+
+# ...except the driver notebook, src/, results/, and this file
+!/.gitignore
+!/statsFinalProj.ipynb
+!/src/
+!/results/
+
+# Junk inside src/
+__pycache__/
+*.pyc
+.DS_Store
+.ipynb_checkpoints/
