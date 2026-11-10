@@ -1,3 +1,4 @@
+import json
 import os
 import subprocess
 
@@ -66,3 +67,21 @@ def load_subject(s, runs=(4, 8), data_dir="data_eeg"):
     X = {r: load_run(s, r, data_dir) for r in runs}
     mu, sd = X[4].mean(0), X[4].std(0)
     return {r: (X[r] - mu) / sd for r in runs}
+
+
+def cached(csv_path, config, compute, force=False):
+    """Load csv_path if it was produced with exactly this config; otherwise run compute() -> DataFrame and save both.
+    The config is saved next to the CSV as *_config.json, so changing any setting triggers a recompute."""
+    cfg_path = csv_path.replace(".csv", "_config.json")
+    config = json.loads(json.dumps(config))   # normalize as JSON would (tuples -> lists); numpy ints raise here, so pass plain ints
+    if not force and os.path.exists(csv_path) and os.path.exists(cfg_path):
+        with open(cfg_path) as f:
+            if json.load(f) == config:
+                print(f"loaded {csv_path}; pass force=True to recompute")
+                return pd.read_csv(csv_path)
+    df = compute()
+    os.makedirs(os.path.dirname(csv_path) or ".", exist_ok=True)
+    df.to_csv(csv_path, index=False)
+    with open(cfg_path, "w") as f:
+        json.dump(config, f, indent=1)
+    return df
