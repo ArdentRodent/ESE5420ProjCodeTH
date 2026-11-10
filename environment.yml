@@ -1,0 +1,18 @@
+# Minimal environment for this project (versions as used on 2026-11-09).
+# Create:   conda env create -f environment.yml
+# Activate: conda activate statsproj
+name: statsproj
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12.15
+  - numpy=2.5.4
+  - scipy=1.18.1
+  - pandas=3.0.6
+  - scikit-learn=1.9.1
+  - matplotlib=3.11.2
+  - joblib=1.6.0
+  - ipykernel=7.4.0
+  - pip
+  - pip:
+      - mne==1.13.2

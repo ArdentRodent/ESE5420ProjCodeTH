@@ -1,6 +1,12 @@
 import os
 import subprocess
 
+import mne
+import numpy as np
+import pandas as pd
+
+mne.set_log_level("ERROR")
+
 BASE = "https://physionet.org/files/eegmmidb/1.0.0"
 RUNS = (4, 8, 12)
 MIN_BYTES = 1_000_000  # a real run is ~2.5 MB; anything smaller is an error page or partial file
@@ -30,10 +36,6 @@ def download(data_dir="data_eeg", subjects=range(1, 110), runs=RUNS):
     print(f"downloaded {n_new}, skipped {n_skip} already present")
 
 
-import mne
-import pandas as pd
-mne.set_log_level("ERROR")
-
 def qc(data_dir="data_eeg", subjects=range(1, 110), runs=RUNS,
        sfreq=160.0, n_ch=64, n_times=19680):
     """One row per file; a subject is kept only if all its runs pass."""
@@ -52,8 +54,6 @@ def qc(data_dir="data_eeg", subjects=range(1, 110), runs=RUNS,
     df = pd.DataFrame(rows)
     bad = df.groupby("subject")["reason"].apply(lambda x: (x != "").any())
     return df, sorted(bad[~bad].index), df[df.reason != ""]
-
-import numpy as np
 
 def load_run(s, r, data_dir="data_eeg", n_times=19680):
     """(T, 64) array: causal 1-40 Hz band-pass, trimmed to n_times samples."""

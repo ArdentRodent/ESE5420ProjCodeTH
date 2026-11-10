@@ -1,8 +1,9 @@
 # Ignore everything at the top level...
 /*
 
-# ...except the driver notebook, src/, results/, and this file
+# ...except the driver notebook, src/, results/, the environment file, and this file
 !/.gitignore
+!/environment.yml
 !/statsFinalProj.ipynb
 !/src/
 !/results/
